@@ -1,0 +1,111 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+        }
+        #container{
+            position: absolute;
+            border:2px solid orange;
+            border-radius:10px;
+            background-color:antiquewhite;
+            height:250px;
+            width:98%;
+            left:50%;
+            top:50%;
+            transform:translate(-50%,-50%);
+        }
+        button{
+            padding:5px;
+            position: absolute;
+            top:90%;
+            left:50%;
+            transform:translate(-50%,-90%);
+            width:40%;
+            border-radius:20px;
+            border:2px solid purple;
+            cursor: pointer;
+
+        }
+        #p{
+            height:60px;
+            width:70%;
+            border:2px solisd black;
+            border-radius:20px;
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            margin-left:10px;
+            text-align: center;
+            position: absolute;
+        }
+        #Author{
+            width:max-content;
+            height:max-content;
+            text-align: right;
+            
+        }
+        h4{
+            margin-top:30px;
+            margin-left:70%;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="p">
+        <p id="quote"></p>
+        </div>
+        <h4 id="Author"></h4>
+        <button>click Me comes to the quotes</button>
+    </div>
+    <script>
+        let quote = document.getElementById('quote');
+         let author = document.getElementById('Author');
+        let btn = document.querySelector("button").addEventListener('click', fetchData);
+            //   quote.innerText  = "Loading...";
+            //   author.innerText = 'loading..';
+            //   console.log(item);
+            //   fetchData();
+            //   quote.innerText =`item.`
+         async function fetchData(){
+           let quote = document.getElementById('quote');
+         let author = document.getElementById('Author');
+                    
+       
+            try{
+        let  response = await fetch('https://dummyjson.com/quotes?limit=3&skip=10')
+                      quote.innerText = "loading...";
+                      author.innerText="loading...";
+
+        if(!response.ok){
+            throw new Error("http server issue")
+        }
+        let data = await response.json();
+         console.log(data);
+         
+         
+          let randomIndex = Math.floor(Math.random()*data.quotes.length)
+          let item = data.quotes[randomIndex]
+          console.log(item.id);
+          
+
+           quote.innerText = item.quote;
+           author.innerText = `--${item.author}`
+        
+        }
+     catch (err){
+        console.error(err);
+       
+        
+    }
+}
+    
+    
+    </script>
+</body>
+</html>
