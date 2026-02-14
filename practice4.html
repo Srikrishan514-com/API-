@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <style>
+           *{
+            padding:0;
+            margin:0;
+           }
+           body{
+            background-color:aqua;
+           }
+           #container{
+            padding:20px;
+            border:2px solid grey;
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+            gap:10px;
+            position: relative;
+            top:70px;
+
+           }
+           #items{
+            border:1px solid black;
+            padding:20px;
+            transition:all 0.2s ease-in ;
+           }
+           #items:hover{
+            transform:scale(1.02);
+            cursor: pointer;
+           }
+           #img{
+            height:230px;
+            width:100%;
+           }
+          
+           span{
+            font-weight:bold;
+            color:red;
+
+           }
+           span::after{
+           content:"$";
+           
+           }
+           #title{
+            font-weight:bold;
+            border-radius:10px;
+            
+           }
+           #title::before{
+            content:"👉"
+           }
+           #btn{
+            text-align: center;
+            padding:10px;
+            cursor: pointer;
+            border:none;
+            border-radius:10px;
+            color:green;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+           
+           }
+           #des{
+            width:250px;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+           }
+           #allbtn{
+            padding:10px;
+
+
+           }
+           #allbtn:hover{
+            cursor: pointer;
+           }
+           #btn-container{
+            display:flex;
+            justify-content:space-around;
+            gap:10px;
+            padding:15px;
+            background-color:cornflowerblue;
+            position: fixed;
+            width:100%;
+            z-index:999;
+
+           }
+         #loader {
+          position:fixed;
+           /* inset: 0; */
+          background: white;
+          display: none;
+            justify-content: center;
+          align-items: center;
+          left:50%;
+          top:50%;
+          transform:translate(-50%,-50%);
+}
+
+#spinner {
+  width: 40px;
+  height: 40px;
+  border: 5px solid #ddd;
+  border-top: 5px solid #333;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+
+    </style>
+</head>
+<body>
+   <div id="btn-container"></div>
+    <div id="container"></div>
+    <div id="loader">
+      <div id="spinner"></div>
+    </div>
+    <script>
+      function show(){
+         let loader = document.getElementById('loader');
+         loader.style.display = "block";
+      }
+      function hide(){
+         let loader = document.getElementById('loader');
+         loader.style.display = "none";
+      }
+          async function fetchData(){
+            try {
+               show()
+               let response = await fetch('https://dummyjson.com/products');
+               if(!response.ok){
+                throw new Error("http request error");
+               }
+               let data =await response.json();
+               console.log(data);
+               
+               localStorage.setItem("products",JSON.stringify(data))
+               let products = localStorage.getItem('products');
+               displayButton()
+               
+               displayData(data.products);
+               
+               // console.log(data.products);
+               // displayButton()
+            } catch (err) {
+                console.error(err);  
+            }
+            finally {
+               hide()
+            }
+         }
+         function displayButton(){
+            let btnContainer = document.getElementById('btn-container')
+            btnContainer.innerHTML = '';
+            let product =JSON.parse(localStorage.getItem('products'))
+            let all = document.createElement('button');
+            all.id ="allbtn";
+            all.innerHTML =`All Items`;
+            all.addEventListener('click',function(){
+               fetchData()
+               // let output = JSON.parse(localStorage.getItem('products'))
+               
+               // displayData(product.products)
+               
+            })
+            btnContainer.appendChild(all);
+            // console.log(typeof(product));
+         let categoryArr = product.products.map(obj => obj.category);
+            // console.log(typeof(res));
+          Array.from(new Set(categoryArr)).forEach(ele => {
+             let div = document.createElement('button');
+             div.id='allbtn';
+             div.innerHTML =ele;
+             btnContainer.appendChild(div);
+             div.addEventListener('click',function(){
+               filterData(ele,product)
+             })
+          })
+           }
+          function filterData(ele,product){
+          
+            console.log(ele);
+            
+          let result = product.products.filter(obj => obj.category == ele)
+           result.forEach(obj => {
+            //   displayData(obj)
+              console.log(obj);
+              
+              displayData(result)
+              
+            })
+          }
+         function displayData(data){
+            // console.log(data);
+            
+         let container = document.getElementById('container')
+         container.innerHTML = "";
+         data.forEach(obj =>{
+            let{images,category,description,price,title,id}= obj;
+            let div = document.createElement('div');
+            div.id="items";
+            div.innerHTML = `
+            <img src = "${images[0]}" id=img loading="lazy">
+            <p id='title'>${title}-<span>${price}</span></p>
+            <p>${category}</p>
+            <p id='des'>${description}</p>
+            <center><button id="btn">See More...</button></center>`
+            container.appendChild(div)
+            div.querySelector('#btn').addEventListener('click',function(){
+            showMore(obj.id);
+            
+            })
+           
+         })
+         function showMore(id){
+            // window.open("https://openweathermap.org/api",'')
+            window.location.href = `./practice4-2.html?id=${id}`;
+            
+         } 
+         }
+         fetchData();
+    </script>
+</body>
+</html>

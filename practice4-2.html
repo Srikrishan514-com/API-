@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>More details</title>
+     <style>
+           *{
+            padding:0;
+            margin:0;
+           }
+           body{
+            background-color:burlywood;
+           }
+          #img{
+            height:250px;
+            width:50%;
+            overflow: hidden;
+            
+          }
+          p{
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            text-align: center;
+          }
+          #items{
+            border:2px solid black;
+            padding:30px;
+            height:max-content;
+            width:40%;
+            top:50%;
+            left:50%;
+            transform:translate(-50%,-50%);
+            position:absolute;
+            border-radius:20px;
+            background-color:white;
+            box-shadow:7px 7px 2px black;
+          }
+          #header{
+          display:flex;
+         justify-content:space-between;
+         padding:10px;
+
+          }
+          #btn{
+            padding:10px;
+            border-radius:30px;
+            position: relative;
+            top:20px;
+            font-weight:bold;
+
+          }
+          #btn:hover{
+            cursor: pointer;
+          }
+        span{
+            color:black;
+            font-weight:bold;
+
+        }
+        a > button{
+          padding:10px;
+          border-radius:15px;
+          font-weight:bold;
+        }
+        a > button:hover{
+          cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="header">
+    
+    <h1>product details:</h1>
+   <a href="http://127.0.0.1:5500/practice4.html"><button>→Back TO Products🏠</button></a>
+    </div>
+    <div id="container"></div>
+    <script>
+        // let btn = document.getElementById('btn').addEventListener('click',function(){
+        //     window.open('http://127.0.0.1:5500/practice4.html')
+        // })
+         let params=new URLSearchParams(location.search);
+         console.log(params);
+        let id = Number(params.get("id"));
+       let products  = JSON.parse(localStorage.getItem('products'))
+       console.log(typeof(products));
+       
+    //   let data = products.filter(obj =>obj.id == id);
+      console.log(products)
+     let data = products.products.filter(obj=> obj.id == id);
+     data.forEach(ele => {
+        let container = document.getElementById('container')
+        container.innerHTML = '';
+         data.forEach(obj =>{
+            let{images,category,thumbnail,price,title,id,rating,warrantyInformation}= obj;
+            let div = document.createElement('div');
+            div.id="items";
+            div.innerHTML = `
+            <center><img src = "${images[0]}" id=img loading="lazy"></center>
+            <p id='title'>Title:${title}</p>
+            <p><span>Price:${price}₹</span></p>
+            <p>Category:${category}</p>
+            <p>Rating:${rating}</p>
+            <p>Warranty:${warrantyInformation}</p>
+            <center><a href ="file:///C:/Users/HP/practice/practice-1/only%20practice/payment.html"><button id="btn">BUY NOW...</button></center></a>
+            
+            `
+            container.appendChild(div)
+         }
+        )
+        
+        
+     });
+      console.log(data);
+      
+
+      
+      
+      
+
+       
+         
+    </script>
+</body>
+</html>
